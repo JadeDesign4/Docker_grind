@@ -1,0 +1,54 @@
+
+---
+
+## ## Part 1: The Docker Recap (The Story So Far)
+
+We’ve covered the "Creation to Persistence" cycle. Here are the core commands you've mastered on your Arch system:
+
+### 1. The Blueprint (Building)
+```bash
+docker build -t practice-image .
+```
+* **`-t` (Tag):** Gives your image a human-readable name so you don't have to remember a random ID like `a1b2c3d4`.
+* **`.` (Context):** Tells Docker, "Look in the current folder for the `Dockerfile`."
+* **The "Why":** This creates a static **Image** (the ISO/Recipe).
+
+### 2. The Life (Running)
+```bash
+docker run -it practice-image sh
+```
+* **`-i` (Interactive):** Keeps the input open so you can type.
+* **`-t` (Terminal):** Gives you a pretty prompt.
+* **`sh`:** Overrides the default `CMD` in the Dockerfile so you don't just see `fastfetch` and exit; it keeps you inside.
+* **The "Why":** This creates the **Container** (the living, breathing OS).
+
+### 3. The Bridge (Volumes/Bind Mounts)
+```bash
+docker run -v /absolute/path/on/arch:/container-data -it practice-image sh
+```
+* **`-v` (Volume):** Links a host folder to a container folder.
+* **The Syntax `[Host]:[Container]`:** It’s always `Left:Right` (Real Life : Virtual Life).
+* **The "Why":** Because containers are **ephemeral** (they die and forget everything). The volume ensures your data lives on your Arch drive forever.
+
+---
+
+## ## Part 2: Your DevOps Scheme of Work
+
+### Phase 1: Docker Fundamentals (We are here)
+* **Current:** Images, Containers, and Bind Mounts.
+* **Next:** Port Mapping (How to view a website running inside a container on your Arch browser).
+* **Goal:** Learn how to "containerize" a simple app.
+
+### Phase 2: Networking & Orchestration
+* **Topics:** Docker Networks (getting two containers to talk to each other) and **Docker Compose** (running 5 containers with one single command).
+* **Goal:** Run a database and a website together.
+
+### Phase 3: Automation & CI/CD
+* **Topics:** Git integration, GitHub Actions, and Shell Scripting for automation.
+* **Goal:** Make it so that when you push code, the Docker image builds itself automatically.
+
+### Phase 4: The Cloud & Kubernetes
+* **Topics:** Deploying your containers to the real internet (AWS/GCP) and managing them at scale.
+
+---
+
