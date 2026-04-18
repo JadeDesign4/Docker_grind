@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>dragdrop-app</title>
+     <link rel="stylesheet" href="style.css>
+</head>
+<body>
+<div class="board">
+    <!-- To Do Lane -->
+    <div class="lane" id="todo-lane">
+        <h3 class="heading">To Do</h3>
+        <form id="todo-form">
+            <input type="text" placeholder="New task..." id="todo-input" />
+            <button type="submit">Add +</button>
+        </form>
+        <div class="task-list" id="todo-list">
+            <!-- Example Draggable Task -->
+            <div class="task" draggable="true">Initial Task</div>
+        </div>
+    </div>
+    <!-- Doing and Done lanes follow same structure -->
+</div>
+</body>

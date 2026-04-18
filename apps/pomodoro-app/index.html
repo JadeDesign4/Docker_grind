@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanilla Pomodoro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+	<!-- Add this right before the </div> for .timer-card -->
+	<audio id="alarm-sound" src="https://google.com" preload="auto"></audio>
+
+        <div class="timer-card">
+            <h1 id="status-text">Focus Time</h1>
+            
+            <div class="timer-display">
+                <svg class="progress-ring" width="240" height="240">
+                    <circle class="progress-ring__circle-bg" stroke="#e0e0e0" stroke-width="8" fill="transparent" r="110" cx="120" cy="120"/>
+                    <circle class="progress-ring__circle" stroke="#ff4757" stroke-width="8" fill="transparent" r="110" cx="120" cy="120"/>
+                </svg>
+                <div id="time-left">25:00</div>
+            </div>
+
+            <div class="controls">
+                <button id="start-pause" class="btn primary">Start</button>
+                <button id="reset" class="btn secondary">Reset</button>
+            </div>
+
+            <div class="mode-switches">
+                <button class="mode-btn active" data-time="25">Work</button>
+                <button class="mode-btn" data-time="5">Short Break</button>
+                <button class="mode-btn" data-time="15">Long Break</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

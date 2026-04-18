@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS Master Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quiz-container" id="quiz">
+        <div id="start-screen">
+            <h1>Ready for the Quiz?</h1>
+            <button id="start-btn">Start Quiz</button>
+        </div>
+
+        <div id="quiz-screen" class="hide">
+            <div class="header">
+                <div id="timer">Time left: <span>15</span>s</div>
+                <div id="score">Score: 0</div>
+            </div>
+            <h2 id="question">Question text goes here?</h2>
+            <div id="answer-buttons" class="btn-grid">
+                <!-- Buttons injected by JS -->
+            </div>
+            <button id="next-btn" class="hide">Next Question</button>
+        </div>
+
+        <div id="result-screen" class="hide">
+            <h1>Quiz Finished!</h1>
+            <p>Your final score is: <span id="final-score">0</span></p>
+            <button onclick="location.reload()">Restart</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

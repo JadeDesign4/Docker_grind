@@ -1,0 +1,6 @@
+:root { --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+body { background-color: #f7f7f7; display: flex; justify-content: center; min-height: 100vh; font-family: 'Lato', sans-serif; }
+.container { width: 350px; margin: 30px auto; }
+/* ... flexbox for containers, styling for lists and buttons ... */
+.money.plus { color: #2ecc71; }
+.money.minus { color: #c0392b; }

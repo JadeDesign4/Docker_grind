@@ -1,0 +1,126 @@
+The Multi-Step Quiz App with a Timer is the perfect finale because it combines state management (tracking scores and current questions), timing functions, and conditional rendering (swapping screens without a page refresh).
+## 1. The Structure (index.html)
+We’ll create a wrapper that holds three main states: the "Start" screen, the "Quiz" area, and the "Results" screen.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS Master Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quiz-container" id="quiz">
+        <div id="start-screen">
+            <h1>Ready for the Quiz?</h1>
+            <button id="start-btn">Start Quiz</button>
+        </div>
+
+        <div id="quiz-screen" class="hide">
+            <div class="header">
+                <div id="timer">Time left: <span>15</span>s</div>
+                <div id="score">Score: 0</div>
+            </div>
+            <h2 id="question">Question text goes here?</h2>
+            <div id="answer-buttons" class="btn-grid">
+                <!-- Buttons injected by JS -->
+            </div>
+            <button id="next-btn" class="hide">Next Question</button>
+        </div>
+
+        <div id="result-screen" class="hide">
+            <h1>Quiz Finished!</h1>
+            <p>Your final score is: <span id="final-score">0</span></p>
+            <button onclick="location.reload()">Restart</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+## 2. The Clean UI (style.css)
+We use helper classes like .hide { display: none; } to toggle between sections.
+
+body { background: #f4f4f9; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.quiz-container { background: white; width: 450px; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+
+.hide { display: none; }
+.header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; color: #555; }
+
+.btn-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 20px 0; }
+button { cursor: pointer; padding: 12px; border-radius: 8px; border: 1px solid #007bff; background: white; color: #007bff; transition: 0.3s; font-size: 1rem; }
+button:hover { background: #007bff; color: white; }
+
+#start-btn, #next-btn { background: #28a745; color: white; border: none; width: 100%; }
+.correct { background: #d4edda !important; border-color: #28a745; color: #155724; }
+.wrong { background: #f8d7da !important; border-color: #dc3545; color: #721c24; }
+
+## 3. The Logic (script.js)
+This script manages the quiz flow and the countdown timer using setInterval.
+
+const questions = [
+    { q: "What does DOM stand for?", a: ["Document Object Model", "Data Object Mode", "Direct Order Mail"], correct: 0 },
+    { q: "Which symbol is used for comments in JS?", a: ["<!--", "//", "/*"], correct: 1 },
+    { q: "Which keyword declares a constant variable?", a: ["var", "let", "const"], correct: 2 }
+];
+let currentIdx = 0, score = 0, timeLeft = 15, timer;
+const startBtn = document.getElementById('start-btn');const quizScreen = document.getElementById('quiz-screen');const startScreen = document.getElementById('start-screen');const resultScreen = document.getElementById('result-screen');const questionEl = document.getElementById('question');const answerBox = document.getElementById('answer-buttons');const timerEl = document.querySelector('#timer span');
+
+startBtn.onclick = () => {
+    startScreen.classList.add('hide');
+    quizScreen.classList.remove('hide');
+    showQuestion();
+    startTimer();
+};
+function startTimer() {
+    timer = setInterval(() => {
+        timeLeft--;
+        timerEl.innerText = timeLeft;
+        if (timeLeft <= 0) endGame();
+    }, 1000);
+}
+function showQuestion() {
+    resetState();
+    let q = questions[currentIdx];
+    questionEl.innerText = q.q;
+    q.a.forEach((ans, i) => {
+        const btn = document.createElement('button');
+        btn.innerText = ans;
+        btn.onclick = () => selectAnswer(i === q.correct, btn);
+        answerBox.appendChild(btn);
+    });
+}
+function selectAnswer(isCorrect, btn) {
+    if (isCorrect) {
+        score++;
+        btn.classList.add('correct');
+        document.getElementById('score').innerText = `Score: ${score}`;
+    } else {
+        btn.classList.add('wrong');
+    }
+    
+    // Brief pause then next question
+    setTimeout(() => {
+        currentIdx++;
+        if (currentIdx < questions.length) showQuestion();
+        else endGame();
+    }, 1000);
+}
+function resetState() {
+    while (answerBox.firstChild) answerBox.removeChild(answerBox.firstChild);
+}
+function endGame() {
+    clearInterval(timer);
+    quizScreen.classList.add('hide');
+    resultScreen.classList.remove('hide');
+    document.getElementById('final-score').innerText = score;
+}
+
+## Why this project "closes the loop":
+
+   1. State Logic: You're tracking currentIdx, score, and timeLeft simultaneously.
+   2. Timing: You’re using setInterval and clearInterval, which is crucial for handling background events.
+   3. UI Feedback: You’re giving the user immediate color-coded feedback (Correct/Wrong).
+
+Now that you have all 5 Vanilla JS projects, would you like me to show you how to host them for free on GitHub Pages so you can send the links to employers?
+
