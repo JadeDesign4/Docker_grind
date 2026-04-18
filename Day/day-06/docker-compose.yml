@@ -1,0 +1,8 @@
+services:
+  web_server:
+    image: nginx:alpine
+    ports:
+      - "8501:80"
+    volumes:
+      - ./petshop-server:/usr/share/nginx/html:ro
+    restart: always

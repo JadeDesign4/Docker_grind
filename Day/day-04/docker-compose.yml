@@ -1,0 +1,14 @@
+services:
+  my-portfolio:
+    image: nginx:alpine
+    ports:
+      - "8400:80"
+    volumes:
+      - ../../apps/cv-app:/usr/share/nginx/html:ro
+
+  staging-site:           # Our second service!
+    image: nginx:alpine
+    ports:
+      - "8440:80"         # A different host port
+    volumes:
+      -  ../../apps/cv-app:/usr/share/nginx/html:ro

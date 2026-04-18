@@ -1,0 +1,6 @@
+services:			# Everthing begins from here.
+  cv-app:			# Name of your service (you choose this).
+    build: .			# Build Image from Dockerfile in the current folder.
+    container_name: ${CONTAINER_NAME}	# Custom name for the container.
+    ports:			# Connects the Host to the container.
+      - "${PORT}:80"		# Host:Container.

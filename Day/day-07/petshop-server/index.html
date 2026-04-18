@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawSome Pet Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-paw"></i> PawSome
+        </div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#shop">Shop</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-icons">
+            <button id="cart-btn">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-count">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Everything Your Pet Deserves</h1>
+            <p>Premium food, toys, and accessories for your best friends.</p>
+            <a href="#shop" class="btn">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- SHOP SECTION -->
+    <section id="shop" class="shop-container">
+        <h2>Our Products</h2>
+        
+        <!-- Category Filters -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="dog">Dogs</button>
+            <button class="filter-btn" data-filter="cat">Cats</button>
+            <button class="filter-btn" data-filter="bird">Birds</button>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid">
+            <!-- Product 1 -->
+            <div class="product-card" data-category="dog">
+                <div class="product-image">🐕</div>
+                <h3>Premium Dog Food</h3>
+                <p class="price">$29.99</p>
+                <button class="add-to-cart" data-name="Premium Dog Food" data-price="29.99">Add to Cart</button>
+            </div>
+            <!-- Product 2 -->
+            <div class="product-card" data-category="cat">
+                <div class="product-image">😾🐱</div>
+                <h3>Cat Scratching Post</h3>
+                <p class="price">$45.00</p>
+                <button class="add-to-cart" data-name="Cat Scratching Post" data-price="45.00">Add to Cart</button>
+            </div>
+            <!-- Product 3 -->
+            <div class="product-card" data-category="bird">
+                <div class="product-image">🦜</div>
+                <h3>Bird Cage Swing</h3>
+                <p class="price">$12.50</p>
+                <button class="add-to-cart" data-name="Bird Cage Swing" data-price="12.50">Add to Cart</button>
+            </div>
+            <!-- Product 4 -->
+            <div class="product-card" data-category="dog">
+                <div class="product-image">🎾</div>
+                <h3>Rubber Chew Toy</h3>
+                <p class="price">$8.99</p>
+                <button class="add-to-cart" data-name="Rubber Chew Toy" data-price="8.99">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE-OUT CART -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Dynamic items go here -->
+            <p class="empty-msg">Your cart is empty</p>
+        </div>
+        <div class="cart-footer">
+            <div class="total">Total: $<span id="cart-total">0.00</span></div>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 PawSome Pet Shop. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

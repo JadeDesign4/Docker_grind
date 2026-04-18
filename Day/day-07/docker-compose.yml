@@ -1,0 +1,16 @@
+services:
+  petshop-app:	# Name of our container/service
+    image: nginx:alpine
+    ports:
+      - "8700:80"	# Host:Container ports
+    volumes:
+      - ./petshop-server:/usr/share/nginx/html:ro    # Host:container shared folder
+    restart: always    # Restarts automatically if container crashes
+
+  music-player:
+    image: nginx:alpine
+    ports: 
+      - "8770:80"
+    volumes:
+      - ./musicplayer-code:/usr/share/nginx/html:ro
+    restart: always

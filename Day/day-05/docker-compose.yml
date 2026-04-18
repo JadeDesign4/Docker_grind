@@ -1,0 +1,8 @@
+services:
+  my-app:
+    image: nginx:alpine	# docker images
+    ports:
+      - "8500:80"		# The Host:container ports
+    volumes:
+      -  ../../apps/cv-app:/usr/share/nginx/html:ro
+    restart: always	# Restarts if crashes or if system reboots

@@ -1,0 +1,9 @@
+services:		# Everything starts from here.
+  quiz-app:		# Name of your service (you choose this).
+    image: nginx:alpine # Name of image you want to pull from Docker Hub.
+    container_name: ${CONTAINER_NAME} # Custom name for you container.
+    ports: 		# Connects Host to the container.
+      - "${PORT}:80"    # Host:Container
+    volumes:		# Connects host files to Container folders
+      - ./quiz-app:/usr/share/nginx/html:ro # Host:Container
+    restart: always	# Keeps the container alive if it crashes or PC reboots
