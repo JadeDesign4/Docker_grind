@@ -1,0 +1,68 @@
+This is a very common point of confusion when starting out. It’s important to distinguish between **Building an Image** and **Running a Container**.
+
+### The Core Difference
+* **Dockerfile:** This is the **Recipe**. It defines what is *inside* the image (the OS, the software, the code). It is static.
+* **Docker Compose:** This is the **Management**. It defines how the image interacts with your Arch Linux host (ports, volumes, names).
+
+**To answer your question directly:** You **cannot** put ports, volumes, or restart policies inside a `Dockerfile`.
+
+---
+
+### Why can't we put them in the Dockerfile?
+Imagine you are a chef.
+* The **Dockerfile** is your recipe for "Jollof Rice." It lists the ingredients (Nginx) and the instructions (Put HTML in folder).
+* The **Compose File** is the "Restaurant Manager." The manager decides which table the rice goes to (**Ports**), where the ingredients are stored (**Volumes**), and what to do if a plate drops (**Restart**).
+
+If you put the "Table Number" (Port) inside the recipe, you could never serve that same rice at a different table!
+
+---
+
+### How they work together
+Here is how you actually do what you're asking. You use the `Dockerfile` to "bake" your code into the image, so you don't even need a volume for simple deployments.
+
+#### 1. The Dockerfile (The Recipe)
+Create a file named `Dockerfile` (no extension):
+
+```dockerfile
+# 1. Use the base image
+FROM nginx:alpine
+
+# 2. Copy your local code INTO the image (Permanent)
+# This replaces the need for a volume if you want the code 'baked in'
+COPY ./web-server /usr/share/nginx/html
+
+# 3. Document that this container listens on port 80
+EXPOSE 80
+```
+
+#### 2. The Compose File (The Manager)
+Now, instead of using a pre-made image, you tell Compose to **build** your custom recipe:
+
+```yaml
+services:
+  my-portfolio:
+    build: .          # Tells Docker to look for the 'Dockerfile' in this folder
+    container_name: ${CONTAINER_NAME}
+    ports:
+      - "${MY_PORT}:80"
+    restart: always
+    # Note: We don't NEED volumes here anymore because we COPY'd the files in the Dockerfile!
+```
+
+---
+
+### ## When to use which?
+
+| Feature | Where it goes | Why? |
+| :--- | :--- | :--- |
+| **`FROM` / `COPY`** | **Dockerfile** | Defines the "DNA" of the application. |
+| **`ports`** | **Compose** | The host port might change (8080 vs 9000). |
+| **`volumes`** | **Compose** | The folder path on your Arch system is unique to you. |
+| **`restart`** | **Compose** | This is a command for the Docker Engine, not the app. |
+
+
+
+### ## The "Pro" Takeaway
+You use the **Dockerfile** to make your app portable. You could take that image you built, send it to a friend, and it would have your HTML inside it already. You use **Compose** to hook that portable app up to your specific Arch Linux environment.
+
+Does it make sense now why we keep the "environment settings" (Compose) separate from the "app ingredients" (Dockerfile)?

@@ -1,0 +1,38 @@
+
+	HOW TO USE COMMENTS IN ("Dockerfile")
+
+Dockerfile comments use the `#` symbol, same as bash/fish:
+
+```dockerfile
+FROM alpine:latest
+
+# Set environment variables for the student tracker
+ENV STUDENT_GOAL="Thinkbook" \
+    STUDENT_NAME="John" \
+    STUDY_HOURS="8" \
+    COURSE="Docker"
+
+# Install required packages in a single layer to keep image size small
+RUN apk add --no-cache \
+    curl \
+    bash \
+    git \
+    vim
+
+# Print student info when container starts
+CMD sh -c "\
+    echo 'Name: ${STUDENT_NAME}' && \
+    echo 'Goal: ${STUDENT_GOAL}' && \
+    echo 'Course: ${COURSE}' \
+"
+```
+
+---
+
+A couple of things worth knowing:
+
+- Comments **only work at the start of a line** — you can't put one at the end of a line like some languages allow
+- Comments are **ignored at build time** — they add zero weight to your image
+- The `#` inside a `sh -c` string is treated as part of the command string, not a Dockerfile comment, so be mindful of that
+
+It's genuinely good practice to comment your Dockerfiles, especially when working in teams. Future you will also thank present you for it! 😄

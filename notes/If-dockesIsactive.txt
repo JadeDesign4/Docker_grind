@@ -1,0 +1,17 @@
+
+### 1. The Group Test (Can you talk to Docker?)
+Since Docker is running, let's see if your user account has permission to use it without `sudo`. Run this:
+```bash
+docker ps
+```
+*   **If you see a table header** (CONTAINER ID, IMAGE, etc.), you are a legend. You're ready.
+*   **If it says "Permission Denied,"** then your user isn't in the `docker` group yet. 
+
+### 2. The "Cloud Greeting" (First Deployment)
+If `docker ps` worked, let's do our first real task. We’re going to pull a very tiny image called **Alpine** (the favorite of DevOps pros because it's only about 5MB).
+
+Run this:
+```bash
+docker run alpine echo "Good Morning"
+```
+

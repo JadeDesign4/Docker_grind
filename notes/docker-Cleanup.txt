@@ -1,0 +1,41 @@
+		
+
+		THE FOLLOWING ARE WAYS TO CLEARNUP AND REMOVE AFTER USING
+
+---
+
+### How to Delete Images
+
+To keep your 1TB drive clean (especially since you're running a quad-boot setup and need to manage space), you'll want to know these three commands:
+
+#### 1. The "Surgical" Delete (By Name or ID)
+If you want to kill a specific image:
+```bash
+docker rmi image-name
+```
+* **Note:** `rmi` stands for "Remove Image."
+* **The Catch:** You cannot delete an image if a container (even a stopped one) is still using it. You’d have to remove the container first using `docker rm [container_id]`.
+
+#### 2. The "Force" Delete
+If Docker complains that a container is using the image and you just want it gone regardless:
+```bash
+docker rmi -f image-name
+```
+
+#### 3. The "Massive Cleanup" (Pruning)
+Since you've been practicing, you likely have "dangling" images (images with no name, usually created when you rebuild an image multiple times with the same tag). To wipe all unused data at once:
+```bash
+docker system prune -a
+```
+* **`-a`:** This stands for "all." It removes all unused images, not just dangling ones. It’s the best way to reclaim space on your Arch partition.
+
+---
+
+### The Build Cycle
+When you run `docker build -t image-name .`:
+1.  **Fresh Start:** If the image was deleted, Docker starts at Step 1 of your Dockerfile.
+2.  **Tagging:** It assigns the `image-name` to the final layer.
+3.  **Ready to Run:** You can immediately `docker run` it again.
+
+
+Since I've mastered building, running, and mounting... Am I ready to see how to share these images with the world, or do I want to try "tagging" them with version numbers first?

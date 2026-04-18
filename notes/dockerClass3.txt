@@ -1,0 +1,103 @@
+## COPY
+No, it's not for creating folders! `COPY` is for copying files/folders **from your local machine into the image**. Think of it like this:
+
+```dockerfile
+COPY <source on your machine> <destination inside the image>
+```
+
+So for example:
+```dockerfile
+COPY . /app
+```
+This means — *"copy everything in my current local folder into a folder called `/app` inside the image"*
+
+A more real world example:
+```dockerfile
+# Copy a specific script from your machine into the image
+COPY setup.sh /app/setup.sh
+
+# Then run it
+RUN sh /app/setup.sh
+```
+
+This is how you get **your own files and code** into a Docker image — without it, the image only has what Alpine ships with.
+
+---
+
+## Your Last Question About Comments
+Go ahead and ask! You said "one last question regarding the comment" but didn't finish it 😄
+
+
+
+
+
+
+Great observation! Here's how you'd handle both:
+
+```dockerfile
+FROM alpine:latest
+
+# Install required packages
+RUN apk add --no-cache \
+    curl \
+    bash \
+    git
+
+# Copy your script from your machine into the image
+COPY setup.sh /app/setup.sh
+
+# Run the script at build time
+RUN sh /app/setup.sh
+
+# Then CMD just starts whatever your container is meant to do
+CMD sh -c "echo 'Container is ready!'"
+```
+
+---
+
+## The Mental Model
+Think of it in phases:
+
+| Phase | What's Happening | Instruction |
+|---|---|---|
+| **Build time** | Setting up the environment | `RUN` |
+| **Build time** | Bringing in your files | `COPY` |
+| **Build time** | Executing setup scripts | `RUN` |
+| **Start time** | Container boots up and runs | `CMD` |
+
+---
+
+## Real World Example
+Say you have a `setup.sh` that creates folders and sets permissions:
+
+```sh
+#!/bin/sh
+mkdir -p /app/data
+mkdir -p /app/logs
+echo "Setup complete"
+```
+
+Your Dockerfile would be:
+```dockerfile
+FROM alpine:latest
+
+RUN apk add --no-cache bash curl
+
+COPY setup.sh /app/setup.sh
+
+# Execute the script during build
+RUN sh /app/setup.sh
+
+ENV APP_ENV="production"
+
+CMD sh -c "echo 'App is running in ${APP_ENV} mode'"
+```
+
+---
+
+So the flow is really:
+- **RUN** = do work while building
+- **COPY** = bring files in while building  
+- **CMD** = what happens when the container actually starts up
+
+Does that clear it up? 😄

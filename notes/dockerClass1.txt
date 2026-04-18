@@ -1,0 +1,44 @@
+
+---
+
+### The "Project Alpine" Build
+
+We are going to create a custom "Environment" inside a container. It’s like a mini-Arch system that only exists to run one task.
+
+
+
+**1. Create your workspace:**
+```bash
+mkdir -p ~/devops_grind/day1
+cd ~/devops_grind/day1
+```
+
+**2. Create a `Dockerfile`:**
+In DevOps, the `Dockerfile` is your "Recipe." Use `nano` or your favorite editor (like `micro` or `vim`) to create a file named `Dockerfile`:
+```Type nano Dockerfile
+  Run these commands in the command line:-
+	
+	# Use the smallest Linux possible
+	FROM alpine:latest
+
+	# Set a greeting variable
+	ENV STUDENT_GOAL="Complete learning Docker"
+
+	# Run a command when the container starts
+	CMD echo "After 20 days, we will ${STUDENT_GOAL}..."
+	```
+
+	**3. Build it:**
+	Run this command to turn that text file into a "Live" image:
+	```bash
+	docker build -t thinkbook-goal .
+	```
+	
+	**4. Run it:**
+	```bash
+	docker run thinkbook-goal
+	```
+
+---
+
+---

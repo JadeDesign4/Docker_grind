@@ -1,0 +1,62 @@
+
+---
+
+### 1. The Quotation Mark Mystery
+**"Why do we always put quotations? Is it compulsory? If we don't put it what would happen?"**
+
+In YAML, quotations aren't *always* compulsory, but they are **highly recommended** for ports and numbers.
+
+* **The Problem:** YAML tries to be "smart." If you type `80:80`, YAML might interpret the colon as a "sexagesimal" (base-60) number—basically, it thinks you're typing a timestamp or a time (like hours:minutes).
+* **The Result:** If you don't use quotes, Docker might get confused and throw a "mapping" error or assign a completely random port. 
+* **The Rule:** Always wrap ports in quotes (e.g., `"8080:80"`) to tell YAML: *"Hey, treat this as a literal String, not a math equation or a clock."*
+
+---
+
+### 2. Environment: Dockerfile vs. Compose
+**"This is just like in the 'Dockerfile' where we declare variables, Is that correct?"**
+
+You are very close!
+* **In a Dockerfile:** You use `ENV` to set variables that are "baked" into the image forever.
+* **In Docker Compose:** The `environment:` section sets variables at **runtime** (the moment the container starts).
+
+**Think of it like this:** The Dockerfile is the "factory settings" of a car. The `environment` section in Compose is like the driver choosing the temperature and the radio station once they get inside. 
+
+---
+
+### 3. Understanding Networks
+**"What does this networks mean and what's the use? This will be the name for the network right?"**
+
+Yes! `jade-net` is the name you chose. 
+
+**The Use Case:** By default, containers are isolated. If you have 10 containers, they can't talk to each other unless they are on the same "bridge." By putting both `my-portfolio` and `my-db` under `jade-net`, you’ve put them in the same virtual room. 
+* They can now talk to each other using their names (e.g., Nginx can find the DB just by pinging `my-db`).
+* It keeps them away from other containers you might run for "Day 9" or "Day 10."
+
+---
+
+### 4. The "Section Below" (The Definition)
+**"I don't understand this section below... networks: jade-net: driver: bridge"**
+
+In Docker Compose, you have to **declare** your resources before you can **use** them.
+
+
+
+* **`networks:` (Top Level):** This is where you tell Docker, "I want to create a brand new network on my Arch system."
+* **`jade-net:`:** This is the name of the network you are creating.
+* **`driver: bridge`:** This is the *type* of network. 
+    * **Bridge** is the most common. it creates a software-based switch inside your Arch Linux kernel. 
+    * It allows containers to talk to each other but keeps them isolated from your physical home Wi-Fi/Ethernet network. It’s like a private "LAN party" just for your containers.
+
+---
+
+### **## Summary Table for your Notes**
+
+| Concept | Simple Analogy |
+| :--- | :--- |
+| **Quotes** | Force the computer to read the text literally (no "smart" guessing). |
+| **Environment** | Live settings for the container (like a volume knob). |
+| **Network (Service Level)** | Telling a container which "room" to go into. |
+| **Network (Top Level)** | Actually building the "room" itself. |
+
+The Top-Level `networks:` section is basically the "Infrastructure" definition, while the one under the services is the "Assignment." 
+

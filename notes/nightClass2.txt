@@ -1,0 +1,90 @@
+
+
+	Alright, let's make that volume happen! First, we need to create a folder on your Arch system where you want to store the shared data.
+	Let's make a folder inside your devops_grind folder called shared-data.
+			
+ 		Open your terminal and run:Bashmkdir -p ~/devops_grind/shared-data
+
+	Once you've done that, we will start a container and tell Docker to mount that folder to a specific spot inside the container.
+	Let me know when you've created that folder!
+
+	Looking at your latest screenshot (**image_9bd00b.png**), I see exactly what's tripping you up.
+
+The reason you aren't "logged in" to the container is because of **the way your Dockerfile is set up**.
+
+### The Problem
+When you run `docker run -it practice-image`, Docker looks at the `CMD` instruction in your Dockerfile. Because your Dockerfile ends with `CMD ["fastfetch"]`, Docker does the following:
+1. Starts the container.
+2. Runs `fastfetch`.
+3. **Immediately exits** because the main process (`fastfetch`) finished its job.
+
+That’s why you see the `fastfetch` output and then you're immediately back at your Arch Linux prompt (`.../cloud/devops_grind`). When you try to run the `echo` command after that, you're back on your local system, which has no idea what `/container-data` is.
+
+---
+
+### The Fix: How to "Stay Inside"
+To stay inside the container and get a command prompt, you need to **override** the default command (`fastfetch`) with a shell (like `sh`).
+
+Run this command instead:
+```bash
+docker run -v ~/devops_grind/shared-data:/container-data -it practice-image sh
+```
+
+### Why this works:
+* By adding `sh` at the end, you are telling Docker: *"Don't run fastfetch. Instead, open a shell for me."*
+* You will see your prompt change to `root@b6afe3c198f6:/#`.
+* **Now** you can run your `echo` command:
+    ```bash
+    echo "Hello from the container!" > /container-data/test.txt
+    ```
+
+Once you do that, leave that terminal open, open a **new** terminal window on your Arch system, and check your `~/devops_grind/shared-data` folder. You'll see the file there!
+
+Give that a go—manually overriding the `CMD` with `sh` is a trick you'll use constantly for debugging.
+
+
+
+
+
+Classic pathing mistake—happens to everyone. Because you used `~` (which represents `/home/youruser`), Docker created a new folder right at the root of your home directory instead of tucked away in your `cloud` folder. At least you know your Docker setup is working perfectly!
+
+Here is the breakdown of those flags and the "Gold Standard" command to repeat this.
+
+---
+
+### The "Anatomy" of the Command
+
+When you run this:
+`docker run -v /home/user/me/cloud/devops_grind/shared-data:/container-data -it practice-image sh`
+
+#### 1. `-v` (Volume / Bind Mount)
+Think of this as **"The Bridge."** It maps a physical location on your Arch Linux host to a virtual location inside the container.
+* **Syntax:** `-v [Host Path]:[Container Path]`
+* **Purpose:** Data persistence. Without this, anything you save inside a container vanishes the moment the container is deleted.
+
+#### 2. `-it` (Interactive + TTY)
+These are actually two flags smashed together, and you almost always use them together when you want to "enter" the container.
+* **`-i` (Interactive):** Keeps the "Standard Input" (your keyboard) open even if not attached. It lets you talk to the container.
+* **`-t` (TTY):** Allocates a virtual terminal. It makes the window look and act like a real terminal (gives you the colored text, the prompt, and makes it feel like you've SSH'd into another machine).
+* **Together:** They give you that `root@abcdef123:/#` prompt so you can run commands manually.
+
+
+
+---
+
+### Summary of Commands (The Cheat Sheet)
+
+If you want to do this again from scratch, here is the flow:
+
+| Step | Command | Purpose |
+| :--- | :--- | :--- |
+| **1** | `mkdir -p ~/me/cloud/devops_grind/shared-data` | Create the folder on Arch (if it doesn't exist). |
+| **2** | `cd ~/me/cloud/devops_grind` | Move to your working directory. |
+| **3** | `docker run -v $(pwd)/shared-data:/container-data -it practice-image sh` | Start the container and link the folders. |
+| **4** | `echo "test" > /container-data/file.txt` | Create a file **inside** the container. |
+| **5** | `exit` | Leave the container. |
+| **6** | `ls ./shared-data` | Verify the file is still there on your Arch system. |
+
+**Pro Tip:** In Step 3, I used `$(pwd)`. This is a bash shortcut that stands for **"Print Working Directory."** If you are already inside your `devops_grind` folder, it automatically grabs the full absolute path for you so you don't have to type out the whole `/home/user/...` string.
+
+Does the distinction between the flags feel clear now, or should we break down what happens if you leave one of them out?

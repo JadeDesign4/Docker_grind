@@ -1,0 +1,105 @@
+
+### The Power of Layers
+Did you notice something interesting in your terminal output? Look at **Step 2/3** and **Step 3/3** in your screenshot. It says:
+
+`---> Using cache`
+
+This is Docker being smart. It remembers the parts of the "recipe" that haven't changed. If you only change a small piece, it doesn't rebuild the entire thing from scratch; it just swaps out the layer you touched. This is why Docker is so fast once you start building complex systems.
+
+
+### The "Dangling" Image
+Even though Docker updated the label `practice-image` to your new build, the **old** version of that image technically still exists on your drive—it just doesn't have a name anymore. In the Linux world, we call these "dangling" images.
+
+Since you're working with limited space (that 4GB RAM / 1TB setup), you don't want these taking up room forever.
+
+**Try this command to see all your images:**
+```bash
+docker images
+```
+
+**Then, run this to clean up the "dangling" ones:**
+```bash
+docker image prune
+```
+
+How many images do you see in the list? If you see one with `<none>` for the name, that’s your old "Thinkbook" version! Ready to try a more advanced Dockerfile command, or do you want to play with the variables a bit more?
+
+
+Look at those file sizes—**13MB**. That’s the beauty of **Alpine Linux**. If you had used Ubuntu as your base, each of those would be closer to 100MB+. In the DevOps world, "thin" images are faster to move and easier to manage.
+
+I see you have three images now:
+1.  **alpine:latest**: The "raw material" you downloaded from the internet.
+2.  **practice-image:latest**: Your new "Bash Scripting" container.
+3.  **thinkbook-goal:latest**: Your previous build.
+
+Since you've mastered the basics of `ENV` and `CMD`, let's level up. In a real Linux environment, you often need to **install** tools inside your container.
+
+### The Next Level: Installing Packages
+Alpine uses a package manager called `apk` (similar to `pacman` on your Arch system or `apt` on Ubuntu).
+
+Go back into your `Dockerfile` and add this line **above** your `ENV` line:
+
+```dockerfile
+RUN apk add --no-cache neofetch
+```
+
+Then, change your `CMD` to:
+```dockerfile
+CMD ["neofetch"]
+```
+
+### Why these changes?
+* **`RUN`**: This tells Docker to execute a command *during the build process*. It’s like telling the chef, "While you're making this, go buy some spices."
+* **`--no-cache`**: This is a pro Alpine trick. it keeps the image size small by not saving the temporary install files.
+* **`CMD ["neofetch"]`**: Instead of just printing text, the container will now run the actual `neofetch` program when it starts.
+
+Try building it again:
+`docker build -t practice-image .`
+
+And running it:
+`docker run practice-image`
+
+
+### One Thing to Notice
+When you run it, look at the "OS" and "Kernel" information that `fastfetch` displays.
+* **The OS** should say **Alpine Linux**.
+* **The Kernel** will actually show your **Arch Linux kernel version**.
+
+This is the "secret sauce" of Docker: The container has its own files (Alpine), but it shares the "brain" (the Kernel) of your Arch host. 
+
+In the Linux world, the dot `.` means "right here" or "this directory."
+* When you **build**, you need the dot to tell Docker *where* the Dockerfile is.
+* When you **run**, you **do not** want the dot. Docker thinks you are trying to tell it to execute a file named `.` inside the container, and since `.` isn't a program, it crashes with that "executable file not found" error.
+
+**Try this instead (no dot at the end):**
+
+```bash
+docker run practice-image
+```
+
+### Why the error happened:
+The error message `exec: ".": executable file not found` is Docker literally saying: *"You told me to run a program called '.', but I can't find a program with that name inside this Alpine container!"*
+
+### One Final "Pro" Tip
+Notice how your terminal prompt says `root@531c1a2862e5`? That random string of characters is your **Container ID**. 
+
+Every time you run `docker run`, a new container instance is created. If you keep running it, you'll end up with a bunch of "stopped" containers sitting in your memory.
+
+**To clean up those old containers, run:**
+```bash
+docker container prune
+```
+
+**And to see what containers are currently existing (even stopped ones):**
+```bash
+docker ps -a
+```
+
+How many stopped containers have we racked up this morning? If it's more than five, that `prune` command is going to feel very satisfying. 
+
+You've successfully:
+1.  **Managed a Build Context** (the folder structure).
+2.  **Authored a Dockerfile** with `ENV`, `RUN`, and `CMD`.
+3.  **Troubleshot Package Installation** (switching to `fastfetch`).
+4.  **Maintained System Health** by pruning dangling containers.
+

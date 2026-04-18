@@ -1,0 +1,55 @@
+---
+
+## Stopping Without Deleting
+Yes, absolutely! This is exactly what `docker stop` is for:
+
+```bash
+docker stop <container_name or container_id>
+```
+
+This **gracefully stops** the container (sends SIGTERM, waits, then SIGKILL) but keeps it intact. You can verify it's stopped with:
+
+```bash
+docker ps -a
+# STATUS will show "Exited" instead of "Up"
+```
+
+---
+
+## Starting It Back Up
+```bash
+docker start <container_name or container_id>
+```
+
+And if you want to **jump straight into it** interactively after starting:
+
+```bash
+docker start -ai <container_name or container_id>
+```
+`-a` = attach, `-i` = interactive
+
+---
+
+## Will Your Files & Changes Be Intact?
+**Yes! 100%.** Everything inside the container is preserved when you `stop` and `start` — files you created, packages you installed (`apk add` on Alpine), config changes, everything.
+
+The distinction to always keep in mind is:
+
+| Command | Stops | Deletes |
+|---|---|---|
+| `docker stop` | ✅ | ❌ |
+| `docker restart` | restarts | ❌ |
+| `docker rm` | ✅ | ✅ |
+| `docker rm -f` | ✅ force | ✅ |
+
+---
+
+## One Thing to Watch On Your System
+Since you're on **4GB RAM with an HDD**, Alpine is actually a smart choice for Docker — it's extremely lightweight (image is ~5MB). Just keep in mind:
+
+- HDD is slower than SSD so container start times may feel slightly sluggish
+- Running multiple containers simultaneously may strain your 4GB RAM, so `docker stop` unused containers to free up memory rather than running everything at once
+
+---
+
+**Short answer:** `docker stop` = safe pause. `docker start` = picks up exactly where you left off. Nothing is lost.

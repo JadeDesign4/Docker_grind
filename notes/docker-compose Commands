@@ -1,0 +1,14 @@
+
+	
+	docker compose up -d (up: Tells docker to read the YAML file and start everything inside, -d: Runs it in the background)
+	
+	docker compose down (Stops everything, frees up the RAM instantly).
+	
+	docker compose down --rmi all (removes the images too if you're low disk space).
+	
+	docker compose stop (Pause everything, saves CPU but keeps the containers).
+
+	docker compose ps (See exactly what's running and which ports they use).
+
+	docker compose logs -f (See the live "heartbeat"(logs) of your servers).
+

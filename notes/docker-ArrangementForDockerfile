@@ -1,0 +1,57 @@
+
+---
+
+## How Docker Layer Caching Works
+Docker builds images **layer by layer** and caches each one. If a layer hasn't changed, Docker reuses the cache instead of rebuilding it — saving you time.
+
+The rule is:
+> **If a layer changes, every layer below it gets rebuilt**
+
+---
+
+## Why RUN Before ENV Matters
+
+```dockerfile
+FROM alpine:latest
+
+# ✅ Correct order
+RUN apk add --no-cache curl bash git    # changes rarely
+ENV STUDENT_NAME="John"                 # changes often
+CMD sh -c "echo ${STUDENT_NAME}"
+```
+
+vs
+
+```dockerfile
+FROM alpine:latest
+
+# ❌ Your teacher warned against this
+ENV STUDENT_NAME="John"                 # changes often
+RUN apk add --no-cache curl bash git    # forces reinstall every time ENV changes
+CMD sh -c "echo ${STUDENT_NAME}"
+```
+
+In the second example, every time you update `STUDENT_NAME`, Docker invalidates the cache and **reinstalls all your packages from scratch** unnecessarily.
+
+---
+
+## The General Rule of Thumb
+Arrange layers from **least changing → most changing**:
+
+```dockerfile
+FROM alpine:latest          # 1. base image (never changes)
+
+RUN apk add --no-cache \    # 2. dependencies (rarely changes)
+    curl \
+    bash
+
+COPY . /app                 # 3. project files (sometimes changes)
+
+ENV STUDENT_NAME="John"     # 4. config/variables (changes often)
+
+CMD sh -c "echo hello"      # 5. startup command (changes most)
+```
+
+--
+
+it's about **building smart and saving time** during rebuilds. 👍

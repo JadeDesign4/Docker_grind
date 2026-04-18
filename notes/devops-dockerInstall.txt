@@ -1,0 +1,32 @@
+	
+			INSTALLING DOCKER
+
+### Today’s Lesson Plan: "The Container Foundation"
+
+---
+
+**Technical Check:**
+Run `free -h` and `swapon`. 
+*   Is your **zRAM** and **Swap** still healthy? 
+*   We need to make sure we have at least 1GB of "breathing room" before we fire up Docker.
+
+---
+
+### Step 2: The Grind (45 mins) - Docker Prep
+If you haven't run the commands from last night yet, now is the time. We aren't just installing software; we are setting up a **Virtual Environment** that recruiters actually care about.
+
+**Run these one by one:**
+```bash
+# 1. Install the engine
+sudo pacman -S docker
+
+# 2. Start the service
+sudo systemctl enable --now docker
+
+# 3. Join the 'docker' group (Crucial so you don't use 'sudo' for every command)
+sudo usermod -aG docker $USER
+```
+
+### Ready for the next move?
+Once you've done the check-in and the install, let me know. We’re going to create a **Dockerfile** that is actually useful—a lightweight environment for your DevOps learning that won't kill your 4GB of RAM.
+

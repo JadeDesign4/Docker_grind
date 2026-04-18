@@ -1,0 +1,201 @@
+
+---
+
+## Multiple ENV Variables
+You can declare them in one `ENV` instruction (recommended) or separately:
+
+```dockerfile
+# Preferred - single instruction
+ENV STUDENT_GOAL="Thinkbook" \
+    STUDENT_NAME="John" \
+    STUDY_HOURS="8" \
+    COURSE="Docker"
+
+# Also valid but less clean
+ENV STUDENT_GOAL="Thinkbook"
+ENV STUDENT_NAME="John"
+ENV STUDY_HOURS="8"
+```
+The single instruction is preferred because each line in a Dockerfile creates a **new layer** — fewer instructions = smaller image.
+
+---
+
+## Multiple CMD Commands
+This is where people get caught off guard — **Docker only honors the last CMD**. So this won't work as expected:
+
+```dockerfile
+# ❌ Wrong - only the last one runs
+CMD echo "Hello"
+CMD echo "World"   # only this runs
+```
+
+Instead, chain them together:
+
+```dockerfile
+# ✅ Use sh -c with && to run multiple commands
+CMD sh -c "echo 'Hello' && echo 'World' && echo 'Done'"
+```
+
+Or for cleaner multi-line readability:
+
+```dockerfile
+CMD sh -c "\
+    echo 'Student: ${STUDENT_NAME}' && \
+    echo 'Goal: ${STUDENT_GOAL}' && \
+    echo 'Daily hours: ${STUDY_HOURS}' \
+"
+```
+
+---
+
+## Putting It All Together
+```dockerfile
+FROM alpine:latest
+
+ENV STUDENT_GOAL="Thinkbook" \
+    STUDENT_NAME="John" \
+    STUDY_HOURS="8" \
+    COURSE="Docker"
+
+CMD sh -c "\
+    echo 'Name: ${STUDENT_NAME}' && \
+    echo 'Goal: ${STUDENT_GOAL}' && \
+    echo 'Course: ${COURSE}' && \
+    echo 'Daily Study Hours: ${STUDY_HOURS}' \
+"
+```
+
+---
+
+## CMD vs RUN — Worth Knowing
+In learning Docker, this distinction matters:
+
+| | `RUN` | `CMD` |
+|---|---|---|
+| When it executes | At **build time** | At **container start** |
+| How many | As many as you want | Only **one** (last wins) |
+| Use case | Installing packages, setup | Starting your app/script |
+
+```dockerfile
+FROM alpine:latest
+
+# RUN executes at build time - you can have many
+RUN apk add curl
+RUN apk add bash
+
+# CMD executes when container starts - only one
+CMD echo "Container is live!"
+```
+
+If you need to install things, use `RUN`. If you need to execute something when the container starts, use `CMD`.
+
+
+
+Same concept as `ENV` — chain them together with `&&` and `\` to keep it one single layer:
+
+```dockerfile
+# ❌ Bad - creates a new layer for each RUN
+RUN apk add curl
+RUN apk add bash
+RUN apk add git
+RUN apk add vim
+```
+
+```dockerfile
+# ✅ Good - single layer, single RUN
+RUN apk add curl \
+    && apk add bash \
+    && apk add git \
+    && apk add vim
+```
+
+Or even cleaner, since `apk add` accepts multiple packages at once:
+
+```dockerfile
+# ✅ Best for installing packages
+RUN apk add --no-cache \
+    curl \
+    bash \
+    git \
+    vim
+```
+
+---
+
+## Why `--no-cache`?
+On Alpine specifically, `--no-cache` tells apk **not to store the package index** after installing. This keeps your image size smaller — very important on a space-conscious system like yours.
+
+---
+
+## Full Clean Example
+```dockerfile
+FROM alpine:latest
+
+ENV STUDENT_GOAL="Thinkbook" \
+    STUDENT_NAME="John"
+
+# All setup in one layer
+RUN apk add --no-cache \
+    curl \
+    bash \
+    git \
+    && mkdir /app \
+    && echo "setup done"
+
+CMD sh -c "echo 'Hello ${STUDENT_NAME}'"
+```
+
+The general rule of thumb is — **one `RUN`, one `ENV`, one `CMD`** — keeps your image lean and your layers minimal.
+
+
+Really good mindset to have! Here's the breakdown:
+
+---
+
+## `sh` 
+This calls the **shell program** itself. On Alpine it's a minimal shell called `ash` but it responds to `sh`. Think of it like saying *"hey shell, I need you to do something"*.
+
+---
+
+## `-c`
+This is a flag that means **"read commands from the following string"**. Without `-c`, the shell expects to read commands from a file or interactively from you typing. With `-c` you're saying *"here's the command as a text string, run it"*.
+
+---
+
+## Why Do We Need It At All?
+Because Docker's `CMD` on its own is dumb — it can only run **one single executable**. It doesn't understand `&&`, `||`, `\`, or any shell logic by itself.
+
+So when you write:
+```dockerfile
+# Docker tries to run this as a raw executable - fails on && 
+CMD echo "Hello" && echo "World"
+```
+
+Docker doesn't know what `&&` means. But when you write:
+```dockerfile
+# You're handing the whole string to the shell to interpret
+CMD sh -c "echo 'Hello' && echo 'World'"
+```
+You're essentially launching a shell and letting **the shell** handle all the logic — it understands `&&`, variables, `||`, everything.
+
+---
+
+## Simple Analogy
+Think of it like this:
+
+| | Analogy |
+|---|---|
+| `sh` | Hiring a translator |
+| `-c` | Giving them a written note to translate |
+| `"echo hello && echo world"` | The note itself |
+
+Without the translator (`sh -c`), Docker reads `&&` and goes *"I don't know what this means"*. With it, the shell handles everything fluently.
+
+---
+
+## You Can Test This Right Now
+In the terminal, try:
+```bash
+sh -c "echo 'Hello' && echo 'World'"
+```
+You're doing exactly what Docker does internally when it hits that `CMD` line — spawning a shell and passing it a string to execute.

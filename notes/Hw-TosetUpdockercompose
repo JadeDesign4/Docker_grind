@@ -1,0 +1,7 @@
+
+	By default after installing docker packages, docker compose doesn't come preinstalled so you'll need to download it seperately
+	   Run:
+		sudo pacman -S docker-compose (To install on arch )
+			or
+		sudo apt install docker-compose (To install on debian-based systems)
+

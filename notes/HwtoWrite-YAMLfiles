@@ -1,0 +1,88 @@
+It’s great that you want to master this manually. In DevOps, being able to write a YAML file from scratch without copy-pasting is what makes you a "Power User." Since you're using Arch and Hyprland, you already know that **configuration is king**.
+
+Here is your masterclass on YAML for Docker.
+
+---
+
+## ## 1. The Golden Rule: The "Two-Space" Law
+YAML stands or falls on **Indentation**.
+* **No Tabs:** Never use the Tab key. Most code editors (and even `nano`) can be set to insert spaces when you hit Tab, but manually, it’s always **2 spaces per level**.
+* **Colons (`:`)**: Every key ends with a colon. If there is a value after it, there **must** be a space after the colon.
+  * *Wrong:* `image:nginx`
+  * *Right:* `image: nginx`
+* **Dashes (`-`)**: Used for **Lists**. Think of a list as a "multiple choice" or "array." Ports and Volumes are lists because you can have more than one.
+
+---
+
+## ## 2. The Anatomy of a Real-World `docker-compose.yml`
+
+Here are the fields you will use 99% of the time, categorized by how "pro" the scenario is.
+
+### **The "Standard" Scenario (What we’ve been doing)**
+```yaml
+version: "3.8"        # (Optional in newer versions) Tells Docker the syntax version.
+services:             # The "Master" key. Everything starts here.
+  app-name:           # The name of your service (you choose this).
+    image: alpine     # Which image to pull from Docker Hub.
+    ports:            # Connecting the Host to the Container.
+      - "8080:80"     # "Host:Container"
+    volumes:          # Connecting Host files to Container folders.
+      - ./data:/app   # "HostPath:ContainerPath"
+    restart: always   # Keeps it alive if it crashes or your PC reboots.
+```
+
+### **The "Real-Life" Scenario (Adding Complexity)**
+In a production environment, you need more control. Here are the advanced fields:
+
+```yaml
+services:
+  database:
+    image: postgres:15-alpine
+    container_name: jade_db   # Forces a specific name (easier to find in 'docker ps').
+    environment:              # Setting "Variables" inside the container.
+      - POSTGRES_PASSWORD=secret123
+    networks:                 # Putting containers in a private virtual "room".
+      - backend
+    healthcheck:              # Tells Docker how to check if the app is REALLY working.
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      retries: 5
+
+networks:                     # Defining the "rooms" mentioned above.
+  backend:
+    driver: bridge
+```
+
+---
+
+## ## 3. All Common Fields & What They Do
+
+| Field | Purpose | Scenario |
+| :--- | :--- | :--- |
+| **`container_name`** | Overrides Docker's default naming. | Use this for your TikTok demos so the names look clean. |
+| **`environment`** | Passes passwords, API keys, or settings. | Essential for Databases or WordPress. |
+| **`depends_on`** | Tells Docker "Don't start App A until Database B is ready." | Use this when building multi-container apps. |
+| **`working_dir`** | Sets the "Starting Folder" inside the container. | Great for custom scripts. |
+| **`command`** | Overrides the default command in the Dockerfile. | Use this to run `ls -la` or specific scripts on start. |
+| **`build`** | Instead of an `image`, it points to a local `Dockerfile`. | Use this when you are building your own apps from scratch. |
+
+---
+
+## ## 4. Pro-Tip: The "Visual Structure"
+Think of YAML like a **Family Tree**:
+1. **The Grandparent:** `services:` (Zero spaces)
+2. **The Parent:** `my-web-server:` (2 spaces)
+3. **The Child:** `image: nginx` (4 spaces)
+4. **The Grandchild (List Items):** `- "80:80"` (6 spaces—the dash counts as part of the indentation).
+
+---
+
+## ## Tonight's "Quiet" Exercise
+Before you sleep, I want you to try to **visualize** a YAML file for a hypothetical "Jade Media" server.
+* It uses `image: jannylund/mediamtx`.
+* It uses Port `8554`.
+* It has a volume linking your `~/Videos` to `/data`.
+
+Don't write it now if you're tired—just see if you can "see" the spaces in your head. 
+
+Rest well, Akib. You’ve done a massive amount of work today on that 4GB machine. We’ll pick up tomorrow with **Phase 3 (Automation)**. See you in the morning! 🌙 🐧

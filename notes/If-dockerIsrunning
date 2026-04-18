@@ -1,0 +1,40 @@
+
+	Simple one! Run:
+
+```bash
+docker ps
+```
+
+This shows only **currently running** containers.
+
+---
+
+If you want **all** containers (running, stopped, exited):
+
+```bash
+docker ps -a
+```
+
+---
+
+If you just want a **count** of running containers:
+
+```bash
+docker ps -q | wc -l
+```
+
+`-q` returns just the container IDs, and `wc -l` counts the lines.
+
+---
+
+**Quick `docker ps` column breakdown:**
+
+| Column | Meaning |
+|---|---|
+| `CONTAINER ID` | Short unique ID |
+| `IMAGE` | Image it was built from |
+| `STATUS` | Running, Exited, Paused etc. |
+| `PORTS` | Port mappings (host:container) |
+| `NAMES` | Auto-generated or custom name |
+
+This works the same in both **bash and fish** since it's just a docker command, not shell syntax.

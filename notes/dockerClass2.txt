@@ -1,0 +1,92 @@
+	
+	CLASS ACTIVITY
+
+Open up your terminal. I want you to create a new directory for a quick project—let's call it `practice-dir`. Inside, create a `Dockerfile` that does the following:
+
+1.  Uses **Alpine** as the base.
+2.  Sets an environment variable named **USER_NAME** with your name (remember the "tightly closed" equals sign rule).
+3.  Runs a command that prints: *"Hello [Your Name], welcome to the system."*
+
+Go ahead and try to write those lines out. If you get stuck on the syntax for the `CMD` or `ENV` parts, just shout. We’re building that muscle memory today.
+
+
+	AFTER ATTEMPTING AND GETTING IT RIGHT(I've done the above correctly and it worked)
+
+Nice job! Your folder structure is perfectly organized—seeing that `tree` output makes a sysadmin's heart happy. You followed the `ENV` rules perfectly: no space around the `=` and you used the `${VARIABLE}` syntax correctly in the `CMD` line.
+
+Now, let's turn that text file into an actual running container. 
+
+### Step 1: Build the Image
+You need to tell Docker to read that file and build an "image" out of it. We use the `-t` flag to give it a "tag" (a name) so we can find it easily. 
+
+Make sure you are inside the `practice-dir` and run:
+
+```bash
+docker build -t practice-image .
+```
+> **Note:** Don't forget that little dot `.` at the end! It tells Docker to look in the *current* directory for the Dockerfile.
+
+---
+
+### Step 2: Run the Container
+Once the build finishes successfully, it's time to see your greeting. Run this:
+
+```bash
+docker run practice-image
+```
+
+### What to look for:
+If everything went right, your terminal should spit out: 
+`Stacking skills for Thinkbook&&Okane 😊`
+
+Give those a shot. If the build fails, copy the error message and send it over—but looking at your syntax in the image, you should be golden!
+
+
+	AFTER COMPLETING THE ABOVE
+
+There it is! **Successfully built** and **Successfully tagged**. That little dot made all the difference.
+
+Now, you've officially baked your "recipe" into a container image. But right now, it’s just sitting there on your drive like a cake in a box. You need to actually "eat" it (run it) to see the result.
+
+Run this command to see your hard work pay off:
+
+```bash
+docker run practice-image
+```
+
+**What happened behind the scenes in your screenshot:**
+1. **Step 1/3:** It grabbed the Alpine base.
+2. **Step 2/3:** It set your goal as an environment variable in a temporary container, then saved that state.
+3. **Step 3/3:** It set the default command to echo your message.
+
+Once you run it, you should see your custom greeting pop up. Give it a go!
+
+	I ASKED A QUESTION:-
+		"I understand It clearer than yesterday now, we hv to create a new folder and place a new Dockerfile in it, tag, build and run it from that folder. Hence, from what I understand multiple Dockerfile can't be in the same folder"
+
+	THE RESPONSE I GOT:-
+		Exactly! You hit the nail on the head. 
+
+In Docker, the folder you are in is called the **Build Context**. When you run `docker build .`, Docker looks for a file specifically named `Dockerfile` in that exact spot. 
+
+### Why you usually keep them separate:
+* **One Project, One Goal:** If you put two `Dockerfile`s in one folder, how would Docker know which one you want to build? It defaults to the one named `Dockerfile`.
+* **Cleanliness:** By using separate folders like `day1` and `practice-dir`, you ensure that the files for one container don't accidentally get sucked into another one.
+
+### The "Pro" Exception (Just so you know):
+You actually *can* have multiple in one folder if you rename them (e.g., `Dockerfile.web` and `Dockerfile.db`), but you have to use a special flag:
+`docker build -f Dockerfile.web -t my-image .`
+
+**But don't do that yet.** Stick to your current method of one folder per project. It’s the standard way to stay organized, especially when you start adding other files like scripts or configuration files to your containers.
+
+---
+
+### Challenge Level 2: Updating the Variable
+Since you've got the hang of the flow, let's try a "hot fix." 
+
+1.  Open that same `Dockerfile` in `practice-dir`.
+2.  Change the `STUDENT_GOAL` to something else—maybe a specific Linux skill or a Japanese phrase.
+3.  **Build it again** using the same command (`docker build -t practice-image .`).
+4.  **Run it again.**
+
+**Question for you:** Do you think you have to delete the old image first, or will Docker just overwrite it? Try it and find out!
