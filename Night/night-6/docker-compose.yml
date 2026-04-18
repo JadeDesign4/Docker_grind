@@ -1,0 +1,8 @@
+services:
+  music-player:
+    image: nginx:alpine
+    ports:
+      - "8601:80"
+    volumes:
+      - ./musicplayer-server:/usr/share/nginx/html:ro
+    restart: always

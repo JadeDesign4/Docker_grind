@@ -1,0 +1,9 @@
+services:		# Everything starts from here.
+  cv-app:		# Name of your service (you choose this).
+    image: nginx:alpine		# Name of the image you want to pull from Docker Hub.
+    container_name: ${CONTAINER_NAME}	# Name You want to give the container ( We already specified this in the '.env' file).
+    ports:		# Connects the Host to the container
+      - ${PORT}:80	# Host:Container
+    volumes:		# Connects the Host files to the Container Folder
+      - ${FOLDER}:/usr/share/nginx/html:ro	# HostPath:ContainerPath
+    restart: always		# Keeps the container alive if it crashes or if PC reboots

@@ -1,0 +1,53 @@
+ybody {
+    background-color: #121212;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+.player-card {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 320px;
+}
+
+.progress-container {
+    background: #404040;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px 0;
+    height: 6px;
+    width: 100%;
+}
+
+.progress {
+    background-color: #1db954; /* Spotify Green */
+    border-radius: 5px;
+    height: 100%;
+    width: 0%; /* Updates via JS */
+    transition: width 0.1s linear;
+}
+
+.controls button {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0 15px;
+    transition: color 0.3s;
+}
+
+.controls button:hover { color: white; }
+
+.play-btn {
+    font-weight: bold;
+    color: #1db954 !important;
+}

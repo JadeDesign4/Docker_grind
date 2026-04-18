@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Music Player</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="player-card">
+        <div class="song-details">
+            <h2 id="title">Song Title</h2>
+            <h3 id="artist">Artist Name</h3>
+        </div>
+
+        <div class="progress-container" id="progress-container">
+            <div class="progress" id="progress"></div>
+        </div>
+
+    <div class="controls">
+        <button id="prev" title="Previous">⏮</button>
+        <button id="play" title="Play/Pause">▶</button>
+        <button id="next" title="Next">⏭</button>
+    </div>
+
+        <audio id="audio" src="https://soundhelix.com"></audio>
+    </div>
+
+       <!-- The Playlist UI -->
+    <ul id="playlist" class="playlist-box">
+        <!-- Songs will be injected here by JS -->
+    </ul>
+
+    <script src="script.js"></script>
+</body>
+</html>
