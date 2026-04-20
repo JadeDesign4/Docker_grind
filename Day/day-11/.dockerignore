@@ -1,0 +1,5 @@
+# .dockerignore
+*.tar.gz
+*.zip
+notes.txt
+.git

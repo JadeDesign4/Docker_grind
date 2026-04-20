@@ -1,0 +1,13 @@
+services:			# Everthing begins from here.
+  my-app:			# Name of your service (you choose this).
+    image: nginx:alpine			# Build Image from Dockerfile in the current folder.
+    container_name: ${CONTAINER_NAME}	# Custom name for the container.
+    ports:			# Connects the Host to the container.
+      - "${PORT}:80"		# Host:Container.
+    volumes:
+      - ${FOLDER}:/usr/share/nginx/html:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m" 		# Keep the file at 5 Megabytes.
+        max-file: "2"		# keep only 2 old files (Total 10MB max)
