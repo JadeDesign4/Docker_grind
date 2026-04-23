@@ -1,0 +1,13 @@
+# Ignore backups
+*.tar
+*.tar.gz
+*.zip
+notes.txt
+
+# Ignore environment secrets
+.env
+.git
+
+# Ignore OS junk
+.DS_Store
+Thumbs.db

@@ -1,0 +1,19 @@
+services:		# Everything Starts from here.
+  my-app:		# Name of your service.
+    image: nginx:alpine		# Image to pull from Docker Hub.
+    container_name: ${CONTAINER_NAME}	# Custom name for your container.
+    ports:		# Connects the Host to the Container.
+      - "${PORT}:80"	# Host:Container
+    volumes: 		# Connects the Host files to the Container folder.
+      - "${FOLDER}:/usr/share/nginx/html:ro"	# HostPath:ContainerPath.
+    labels: 
+      project: "local_deployment"
+      day: "13"
+      environment: "testing"    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "3"
+        compress: "true"	# The Disk Saver
+        labels: "project,day" # Tells the log to include these specific labels
