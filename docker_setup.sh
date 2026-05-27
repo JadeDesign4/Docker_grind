@@ -95,6 +95,7 @@ echo -e "\n--- [ Checking Status ] ---"
 echo -e "\n--- [ Changing permissions on communication socket ] ---"
 	sudo chmod 666 /var/run/docker.sock # Makes sure the current user can read the communication socket.	
 
+sleep 1
 echo -e "\n================================"
 echo -e "	Docker Setup Complete!"
 echo -e "\n================================"
